@@ -1,4 +1,4 @@
-package org.example.tol.bean;
+package org.example.tol.controller.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,15 +11,12 @@ import java.util.Date;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 @Builder
-public class User {
+public class RegisterRS {
 
-    private String id;
     private String username;
     private String name;
     private String dob;
-    private int gender;
+    private String gender;
     private boolean isActive;
     private Date createTime;
-    private Date updateTime;
-
 }

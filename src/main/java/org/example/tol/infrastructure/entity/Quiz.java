@@ -1,4 +1,4 @@
-package org.example.tol.database.entity;
+package org.example.tol.infrastructure.entity;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
-@Document(collation = "quizzes")
+@Document
 @Data
 public class Quiz {
 

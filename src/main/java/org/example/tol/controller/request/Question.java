@@ -1,4 +1,4 @@
-package org.example.tol.bean;
+package org.example.tol.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package org.example.tol.database.entity;
+package org.example.tol.infrastructure.entity;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.Date;
 
 @Data
-@Document(collation = "users")
+@Document
 public class User {
 
     @Id

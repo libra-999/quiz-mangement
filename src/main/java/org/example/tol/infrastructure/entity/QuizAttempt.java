@@ -1,4 +1,4 @@
-package org.example.tol.database.entity;
+package org.example.tol.infrastructure.entity;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Data
-@Document(collation = "quiz_attempts")
+@Document
 public class QuizAttempt {
 
     @Id
