@@ -34,7 +34,7 @@ import static org.example.tol.util.exception.HandleIPClient.toIpAddr;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class Auth implements AuthService {
+public class AuthFacade implements AuthService {
 
     private final static int MAX_ATTEMPT = 5;
     private static final long BLOCK_TIME_MINUTES = 3;

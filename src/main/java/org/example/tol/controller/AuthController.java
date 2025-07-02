@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.example.tol.controller.mapper.RegisterMapper;
+import org.example.tol.controller.mapper.AuthMapper;
 import org.example.tol.controller.request.Log;
 import org.example.tol.controller.request.Register;
 import org.example.tol.controller.response.LoginRS;
@@ -29,7 +29,7 @@ import static org.example.tol.util.controller.ControllerHandler.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final RegisterMapper mapper;
+    private final AuthMapper mapper;
 
     @Operation(summary = "login")
     @ApiResponses({

@@ -18,7 +18,7 @@ import java.util.Optional;
 public class HttpBodyPagingResponse {
 
     public static final String SIZE = "size";
-    public static final String PAGE = "page";
+    public static final String PAGE = "list";
     public static final String TOTAL = "total";
     public static final String TOTAL_PAGES = "totalPages";
 

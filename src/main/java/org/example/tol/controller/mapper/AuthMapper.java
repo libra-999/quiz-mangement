@@ -9,7 +9,7 @@ import org.mapstruct.*;
     nullValueMapMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
-public interface RegisterMapper {
+public interface AuthMapper {
 
     RegisterRS from(User entity);
 }
