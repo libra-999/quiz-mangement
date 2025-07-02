@@ -1,7 +1,6 @@
 package org.example.tol.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,8 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-import static org.example.tol.util.controller.ControllerHandler.responseCreated;
-import static org.example.tol.util.controller.ControllerHandler.responseSucceed;
+import static org.example.tol.util.controller.ControllerHandler.*;
 
 @Tag (name = "Auth")
 @RestController
@@ -32,13 +30,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final RegisterMapper mapper;
-    private final ObjectMapper objectMapper;
 
     @Operation(summary = "login")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "SUCCESS",  content = {
             @Content(mediaType = "application/json")
-        }),
+        })
     })
     @PostMapping("/login")
     public ResponseEntity<HttpBodyResponse<LoginRS>> login(@RequestBody @Validated Log request)
@@ -46,7 +43,7 @@ public class AuthController {
         Map<String, Object> map = authService.login(request);
         LoginRS response = new LoginRS();
 
-        response.setUser(objectMapper.readValue((String) map.get("user"), RegisterRS.class));
+        response.setUser(fromJsonString((String) map.get("user"), RegisterRS.class));
         response.setToken(map.get("token").toString());
         return responseSucceed(response);
     }
@@ -55,7 +52,7 @@ public class AuthController {
     @ApiResponses({
         @ApiResponse(responseCode = "201", description = "CREATED",  content = {
             @Content(mediaType = "application/json")
-        }),
+        })
     })
     @PostMapping("/register")
     public ResponseEntity<HttpBodyResponse<RegisterRS>> register(@RequestBody @Validated Register request) {

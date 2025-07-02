@@ -15,7 +15,7 @@ public class Register {
 
     @NotNull(message = "PASSWORD_IS_REQUIRED")
     @NotBlank(message = "PASSWORD_IS_REQUIRED")
-    @Pattern(message = "Password must be at least 8 character", regexp = "^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>,.:;(){}]).{8,15}$")
+    @Pattern(message = "Password must be at least 8 character, include symbol and number", regexp = "^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>,.:;(){}]).{8,15}$")
     private String password;
 
     @NotNull(message = "DOB_IS_REQUIRED")

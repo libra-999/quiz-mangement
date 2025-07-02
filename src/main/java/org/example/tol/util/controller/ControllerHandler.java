@@ -1,13 +1,15 @@
 package org.example.tol.util.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.tol.util.entity.HttpBodyPagingResponse;
 import org.example.tol.util.entity.HttpBodyResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Map;
-
 public class ControllerHandler {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static <T> ResponseEntity<HttpBodyResponse<T>> responsePaging(
         T data, HttpBodyPagingResponse pagingResponse) {
@@ -90,4 +92,14 @@ public class ControllerHandler {
                     .paging(pagingResponse)
                     .build());
     }
+
+    public static <T> String toJsonString(T data) throws JsonProcessingException {
+        return data instanceof String ? (String) data : objectMapper.writeValueAsString(data);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJsonString(String data, Class<T> classData) throws JsonProcessingException {
+        return classData.equals(String.class) ? (T) data : objectMapper.readValue(data, classData);
+    }
+
 }

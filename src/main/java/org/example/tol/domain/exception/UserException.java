@@ -20,4 +20,8 @@ public class UserException extends HttpException {
     public static UserException alreadyExist() {
         return new UserException(HttpStatus.BAD_REQUEST, "USER_ALREADY_EXIST");
     }
+
+    public static UserException manyAttempt(){
+        return new UserException(HttpStatus.BAD_REQUEST, "TOO_MANY_ATTEMPT");
+    }
 }

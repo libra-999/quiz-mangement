@@ -26,4 +26,13 @@ springdoc:
 logging:
   file:
     name: logback
-
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+          redis:
+            core:
+              RedisTemplate: DEBUG

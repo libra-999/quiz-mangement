@@ -24,7 +24,7 @@ import java.util.*;
 public class RestControllerAdviceExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleException(Exception exception) {
+    public ResponseEntity<Object> handleException(Exception exception, HttpException httpException) {
 
         String messageError =
             Optional.ofNullable(exception.getMessage())
@@ -35,7 +35,7 @@ public class RestControllerAdviceExceptionHandler {
 
         HttpBodyResponse<Object> response =
             HttpBodyResponse.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .status(httpException.getHttpStatus().value())
                 .message(messageError)
                 .error(httpBodyErrorResponse)
                 .build();
@@ -159,7 +159,7 @@ public class RestControllerAdviceExceptionHandler {
 //            .build();
 //
 //        HttpBodyResponse<Object> response = HttpBodyResponse.builder()
-//            .status(HttpStatus.BAD_REQUEST.value())
+//            .status(HttpStatus.BAD_REQUEST.getValue())
 //            .message("Username or password is incorrect")
 //            .error(errorResponse)
 //            .build();

@@ -25,6 +25,7 @@ public class CustomAuthHandler implements AuthenticationFailureHandler {
         body.put("status", 400);
         body.put("error", "Invalid credentials");
         body.put("message", "Username or password is incorrect");
+        body.put("data", "null");
 
         new ObjectMapper().writeValue(response.getOutputStream(), body);
     }

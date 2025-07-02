@@ -69,12 +69,6 @@ public class SecurityConfig {
                     ).permitAll()
                     .anyRequest().authenticated()
             )
-            .formLogin(
-                form ->
-                    form.loginPage("/v1/api/auth/login")
-                    .failureHandler(failureHandler)
-                    .permitAll()
-            )
             .sessionManagement(sessionManagement ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
