@@ -1,7 +1,10 @@
 package org.example.tol.infrastructure.entity;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -33,10 +36,11 @@ public class User {
     private boolean isActive;
 
     @Field(name = "createTime")
+    @CreatedDate
     private Date createTime;
 
     @Field(name = "updateTime")
+    @LastModifiedDate
     private Date updateTime;
-
 
 }

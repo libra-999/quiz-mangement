@@ -1,10 +1,11 @@
 package org.example.tol.domain.service;
 
 import org.example.tol.controller.request.Client;
+import org.example.tol.controller.request.ClientUpdate;
 import org.example.tol.infrastructure.entity.User;
-import org.example.tol.util.entity.Filter;
-import org.example.tol.util.entity.PaginationQuery;
-import org.example.tol.util.entity.Paging;
+import org.example.tol.share.entity.Filter;
+import org.example.tol.share.entity.PaginationQuery;
+import org.example.tol.share.entity.Paging;
 
 public interface UserService {
 
@@ -14,11 +15,11 @@ public interface UserService {
 
     User create(Client request);
 
-    User update(String userId, Client request);
+    User update(String userId, ClientUpdate request);
 
-    User delete(String userId);
+    void delete(String userId);
 
-    User deleteAll();
+    void deleteAll();
 
-    boolean isActive(String userId);
+    void isActive(String userId, boolean status);
 }

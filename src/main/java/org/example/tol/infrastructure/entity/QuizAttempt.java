@@ -1,7 +1,9 @@
 package org.example.tol.infrastructure.entity;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -29,5 +31,16 @@ public class QuizAttempt {
 
     @Field(name = "submitted_at")
     private Date submittedAt;
+
+    @CreatedDate
+    @Field(name = "createTime")
+    public Date createTime;
+
+    @LastModifiedDate
+    @Field(name = "updateTime")
+    public Date updateTime;
+
+    @Field(name = "deleteTime")
+    public Date deleteTime;
 
 }

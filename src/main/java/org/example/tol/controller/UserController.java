@@ -1,28 +1,27 @@
 package org.example.tol.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.tol.controller.mapper.UserMapper;
+import org.example.tol.controller.request.Client;
+import org.example.tol.controller.request.ClientUpdate;
+import org.example.tol.controller.response.UserDetailRS;
 import org.example.tol.controller.response.UserRS;
 import org.example.tol.domain.service.UserService;
 import org.example.tol.infrastructure.entity.User;
-import org.example.tol.util.entity.*;
+import org.example.tol.share.entity.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.example.tol.util.controller.ControllerHandler.responsePaging;
+import static org.example.tol.share.controller.ControllerHandler.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/v1/api/users")
 @RequiredArgsConstructor
 @Tag(name = "User")
 public class UserController {
@@ -30,11 +29,8 @@ public class UserController {
     private final UserMapper mapper;
     private final UserService service;
 
-    @Operation(tags = "User")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "SUCCESS", content = {
-            @Content(mediaType = "application/json")})
-    })
+    @Operation(summary = "list")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     public ResponseEntity<HttpBodyResponse<List<UserRS>>> user(
         @RequestParam(required = false) Integer page,
@@ -53,4 +49,49 @@ public class UserController {
             )
         );
     }
+
+    @Operation(summary = "view")
+    @GetMapping("/{userId}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<HttpBodyResponse<UserDetailRS>> view(@PathVariable String userId) {
+        return responseSucceed(mapper.to(service.view(userId)));
+    }
+
+    @Operation(summary = "create")
+    @PostMapping
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<HttpBodyResponse<UserRS>> create(@RequestBody @Validated Client request) {
+        return responseCreated(mapper.from(service.create(request)));
+    }
+
+
+    @Operation(summary = "update")
+    @PutMapping("/{userId}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<HttpBodyResponse<UserRS>> update(@RequestBody @Validated ClientUpdate request, @PathVariable String userId) {
+        return responseSucceed(mapper.from(service.update(userId, request)));
+    }
+
+    @Operation(summary = "delete")
+    @DeleteMapping("/{userId}")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> delete(@PathVariable String userId){
+        service.delete(userId);
+        return responseDeleted();
+    }
+
+    @Operation(summary = "deleteAll")
+    @DeleteMapping
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> deleteAll(){
+        service.deleteAll();
+        return  responseDeleted();
+    }
+
+//    @Operation(summary = "update status")
+//    @PutMapping("/{userId}")
+//    public ResponseEntity<?> updateStatus(@PathVariable String userId){
+//        service.isActive(userId);
+//        return responseSucceed();
+//    }
 }

@@ -1,6 +1,6 @@
 package org.example.tol.domain.exception;
 
-import org.example.tol.util.exception.HttpException;
+import org.example.tol.share.exception.HttpException;
 import org.springframework.http.HttpStatus;
 
 public class UserException extends HttpException {

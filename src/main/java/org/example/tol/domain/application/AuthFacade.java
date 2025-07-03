@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.tol.config.jwt.Util;
-import org.example.tol.config.security.UserDetail;
+import org.example.tol.share.context.jwt.Util;
+import org.example.tol.share.context.security.UserDetail;
 import org.example.tol.controller.request.Log;
 import org.example.tol.controller.request.Register;
 import org.example.tol.domain.exception.UserException;
@@ -14,7 +14,7 @@ import org.example.tol.infrastructure.redis.RedisService;
 import org.example.tol.infrastructure.redis.config.RedisKey;
 import org.example.tol.infrastructure.repository.UserRepository;
 import org.example.tol.domain.service.AuthService;
-import org.example.tol.util.constant.Gender;
+import org.example.tol.share.constant.Gender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.example.tol.util.controller.ControllerHandler.toJsonString;
-import static org.example.tol.util.exception.HandleIPClient.toIpAddr;
+import static org.example.tol.share.controller.ControllerHandler.toJsonString;
+import static org.example.tol.share.exception.HandleIPClient.toIpAddr;
 
 @Slf4j
 @Service
