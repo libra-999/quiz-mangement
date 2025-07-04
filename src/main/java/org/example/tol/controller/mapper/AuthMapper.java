@@ -7,12 +7,13 @@ import org.mapstruct.*;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    nullValueMapMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL
 )
 public interface AuthMapper {
 
     @Mapping(target = "gender", expression = "java(convertGender(entity))")
+    @Mapping(target = "createTime", source = "createTime")
     RegisterRS from(User entity);
 
     default String convertGender(User entity) {

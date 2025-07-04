@@ -41,7 +41,7 @@ public class TemplateBuilder<T> {
         return this;
     }
 
-    //    Call like: withFilters("admin", "is", "username")
+    //  Call like: withFilters("admin", "is", "username")
     public TemplateBuilder<T> withFilters(String... fieldsAndValues) {
         for (int i = 0; i < fieldsAndValues.length; i += 3) {
             String field = fieldsAndValues[i];
@@ -59,7 +59,7 @@ public class TemplateBuilder<T> {
         return this;
     }
 
-    //    handling with date filter by start and end
+    //  handling with date filter by start and end
     public TemplateBuilder<T> withDate(Date start, Date end, String field) {
         if (Objects.nonNull(start) && Objects.nonNull(end) && StringUtils.hasText(field.trim())) {
             criteriaList.add(Criteria.where(field.trim()).gte(start).lte(end));
@@ -67,7 +67,7 @@ public class TemplateBuilder<T> {
         return this;
     }
 
-    //    handling with value as boolean
+    //  handling with value as boolean
     public TemplateBuilder<T> withStatus(boolean status, String field) {
         if (StringUtils.hasText(field)) {
             criteriaList.add(Criteria.where(field).is(status));
@@ -75,10 +75,26 @@ public class TemplateBuilder<T> {
         return this;
     }
 
-    // fetching only records that have field is null
-    public TemplateBuilder<T> deletedIsNull() {
-        criteriaList.add(Criteria.where("deleted").is(null));
+    //  fetching only records that have field is null with key
+    public TemplateBuilder<T> deletedIsNull(String field) {
+        criteriaList.add(Criteria.where(field).is(null));
         return this;
+    }
+
+    //  view only is null with fields is and key
+    public TemplateBuilder<T> isNull(String id, String field) {
+        criteriaList.add(Criteria.where("_id").is(id));
+        criteriaList.add(Criteria.where(field).is(null));
+        return this;
+    }
+
+    //  instead of findById
+    public Optional<T> findOne() {
+        return Optional.ofNullable(mongoTemplate.findOne(build(), entityClass));
+    }
+
+    public List<T> findAll() {
+        return mongoTemplate.find(build(), entityClass);
     }
 
     public TemplateBuilder<T> withSort(Sort sort) {

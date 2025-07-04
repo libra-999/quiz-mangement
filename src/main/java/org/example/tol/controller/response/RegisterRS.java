@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
@@ -20,5 +18,5 @@ public class RegisterRS {
     private String dob;
     private String gender;
     private boolean isActive;
-    private Date createTime;
+    private String createTime;
 }

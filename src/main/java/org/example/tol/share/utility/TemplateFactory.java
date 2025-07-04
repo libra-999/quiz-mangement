@@ -16,5 +16,4 @@ public class TemplateFactory {
     public <T> TemplateBuilder<T> builder(Class<T> entityClass) {
         return new TemplateBuilder<>(entityClass, mongoTemplate);
     }
-
 }

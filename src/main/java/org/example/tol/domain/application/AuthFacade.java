@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.tol.share.context.jwt.Util;
 import org.example.tol.share.context.security.UserDetail;
 import org.example.tol.controller.request.Log;
-import org.example.tol.controller.request.Register;
+import org.example.tol.controller.request.RegisterRQ;
 import org.example.tol.domain.exception.UserException;
 import org.example.tol.infrastructure.entity.User;
 import org.example.tol.infrastructure.redis.RedisService;
@@ -76,7 +76,7 @@ public class AuthFacade implements AuthService {
     }
 
     @Override
-    public User register(Register request) {
+    public User register(RegisterRQ request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw UserException.alreadyExist();
         }

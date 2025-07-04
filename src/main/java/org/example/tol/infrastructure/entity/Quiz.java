@@ -26,9 +26,6 @@ public class Quiz {
     @Field(name = "duration")
     private long duration;
 
-    @Field(name = "questions")
-    private List<Question> questions;
-
     @CreatedDate
     @Field(name = "createTime")
     public Date createTime;
@@ -39,4 +36,7 @@ public class Quiz {
 
     @Field(name = "deleteTime")
     public Date deleteTime;
+
+    @Field(name = "questions")
+    public List<Question> questions;
 }

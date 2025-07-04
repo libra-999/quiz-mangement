@@ -17,7 +17,10 @@ public class Question {
     @Id
     private String id;
 
-    @Field(name = "text")
+    @Field(name = "quiz_id")
+    private String quizId;
+
+    @Field(name = "question")
     private String question;
 
     @Field(name = "correct_answer")

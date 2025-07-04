@@ -23,7 +23,7 @@ import static org.example.tol.share.controller.ControllerHandler.*;
 @RestController
 @RequestMapping("/v1/api/users")
 @RequiredArgsConstructor
-@Tag(name = "User")
+@Tag(name = "Admin - User")
 public class UserController {
 
     private final UserMapper mapper;

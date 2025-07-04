@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.tol.controller.mapper.AuthMapper;
 import org.example.tol.controller.request.Log;
-import org.example.tol.controller.request.Register;
+import org.example.tol.controller.request.RegisterRQ;
 import org.example.tol.controller.response.LoginRS;
 import org.example.tol.controller.response.RegisterRS;
 import org.example.tol.domain.service.AuthService;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static org.example.tol.share.controller.ControllerHandler.*;
 
-@Tag (name = "Auth")
+@Tag (name = "Admin - Auth")
 @RestController
 @RequestMapping("/v1/api/auth")
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class AuthController {
 
     @Operation(summary = "register")
     @PostMapping("/register")
-    public ResponseEntity<HttpBodyResponse<RegisterRS>> register(@RequestBody @Validated Register request) {
+    public ResponseEntity<HttpBodyResponse<RegisterRS>> register(@RequestBody @Validated RegisterRQ request) {
         return responseCreated(mapper.from(authService.register(request)));
     }
 

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class Register {
+public class RegisterRQ {
 
     @NotNull(message = "USERNAME_IS_REQUIRED")
     @NotBlank(message = "USERNAME_IS_REQUIRED")
