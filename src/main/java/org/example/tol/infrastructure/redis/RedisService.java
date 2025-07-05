@@ -19,7 +19,9 @@ public interface RedisService {
 
     public Map<String, String> hash(String channel);
 
-    public String hash(String channel, String message);
+    public void putHash(String channel, String key, String value);
+
+    public String hash(String channel, String key);
 
     public void hashDelete(String channel, String key);
 
@@ -30,5 +32,13 @@ public interface RedisService {
     public Long add(List<User> users, String key);
 
     public Long increment(String key);
+
+    public Set<String> topPlayer(String channel, int topNumber);
+
+    public Double score(String channel, String user);
+
+    public Long rank(String channel, String userId);
+
+    public void addToZSet(String channel, String member, int score);
 
 }

@@ -1,12 +1,15 @@
 package org.example.tol.domain.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tol.controller.request.Client;
 import org.example.tol.controller.request.ClientUpdate;
 import org.example.tol.domain.exception.UserException;
 import org.example.tol.domain.service.UserService;
 import org.example.tol.infrastructure.entity.User;
+import org.example.tol.infrastructure.redis.RedisService;
+import org.example.tol.infrastructure.redis.config.RedisKey;
 import org.example.tol.infrastructure.repository.UserRepository;
 import org.example.tol.share.constant.Gender;
 import org.example.tol.share.entity.*;
@@ -14,16 +17,15 @@ import org.example.tol.share.utility.TemplateFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
+
+import static org.example.tol.share.controller.ControllerHandler.fromJsonString;
+import static org.example.tol.share.controller.ControllerHandler.toJsonString;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class UserFacade implements UserService {
 
     private final UserRepository repository;
     private final TemplateFactory templateFactory;
-    private final SimpMessagingTemplate messageTemplate;
+    private final RedisService redisService;
     private final PasswordEncoder encode;
 
     @Override
@@ -53,9 +55,17 @@ public class UserFacade implements UserService {
             .total(page.getTotalElements()).build();
     }
 
+    @SneakyThrows
     @Override
     public User view(String userId) {
-        return repository.findById(userId).orElseThrow(UserException::notFound);
+        User user = repository.findById(userId).orElseThrow(UserException::notFound);
+        String cacheProfile = redisService.hash(RedisKey.HASH_PROFILE_RESULT,userId); // get object from userId
+        if ( cacheProfile != null){
+            fromJsonString(cacheProfile, User.class); // if userId given same with userId in cache => correct
+        }else {
+            redisService.putHash(RedisKey.HASH_PROFILE_RESULT, userId, toJsonString(user)); // get id as field and object of user
+        }
+        return user;
     }
 
     @Override
@@ -109,19 +119,19 @@ public class UserFacade implements UserService {
     }
 
 
-    @MessageMapping("/presence/online")
-    public void userOnline(@Payload String userId){
-        isActive(userId, true);
-        messageTemplate.convertAndSend("/topic/presence",
-            Map.of("status", "ONLINE" ));
-    }
-
-    @MessageMapping("/presence/offline")
-    public void userOffline(@Payload String userId){
-        isActive(userId, false);
-        messageTemplate.convertAndSend("/topic/presence",
-            Map.of("status", "OFFLINE"));
-
-    }
+//    @MessageMapping("/presence/online")
+//    public void userOnline(@Payload String userId){
+//        isActive(userId, true);
+//        messageTemplate.convertAndSend("/topic/presence",
+//            Map.of("status", "ONLINE" ));
+//    }
+//
+//    @MessageMapping("/presence/offline")
+//    public void userOffline(@Payload String userId){
+//        isActive(userId, false);
+//        messageTemplate.convertAndSend("/topic/presence",
+//            Map.of("status", "OFFLINE"));
+//
+//    }
 
 }

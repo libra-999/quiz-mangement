@@ -2,6 +2,7 @@ package org.example.tol.domain.application;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tol.controller.request.AttemptRQ;
 import org.example.tol.controller.response.AttemptRS;
@@ -13,6 +14,8 @@ import org.example.tol.infrastructure.entity.Question;
 import org.example.tol.infrastructure.entity.Quiz;
 import org.example.tol.infrastructure.entity.QuizAttempt;
 import org.example.tol.infrastructure.entity.User;
+import org.example.tol.infrastructure.redis.RedisService;
+import org.example.tol.infrastructure.redis.config.RedisKey;
 import org.example.tol.infrastructure.repository.QuizAttemptRepository;
 import org.example.tol.infrastructure.repository.UserRepository;
 import org.example.tol.share.entity.PageNumber;
@@ -26,6 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static org.example.tol.share.controller.ControllerHandler.fromJsonString;
+import static org.example.tol.share.controller.ControllerHandler.toJsonString;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +42,7 @@ public class AttemptFacade implements AttemptService {
     private final QuizAttemptRepository attemptRepository;
     private final UserRepository userRepository;
     private final TemplateFactory templateFactory;
+    private final RedisService redisService;
 
 
     @Override
@@ -55,13 +63,21 @@ public class AttemptFacade implements AttemptService {
     }
 
     @Override
+    @SneakyThrows
     public QuizAttempt view(String attemptId) {
-        return templateFactory.builder(QuizAttempt.class).isNull(attemptId, "deleteTime")
+        QuizAttempt entity = templateFactory.builder(QuizAttempt.class).isNull(attemptId, "deleteTime")
             .findOne().orElseThrow(AttemptException::notFound);
+        String cacheAttempt = redisService.getValue(RedisKey.VALUE_ATTEMPT + entity.getUserId() + ":" + entity.getQuizId());
+        if (cacheAttempt != null) {
+            return fromJsonString(cacheAttempt, QuizAttempt.class);
+        } else {
+            return entity;
+        }
     }
 
     @Override
     @Transactional
+    @SneakyThrows
     public QuizAttempt create(AttemptRQ request, String quizId) {
 
         User user = userRepository.findById(request.getUserId()).orElseThrow(UserException::notFound);
@@ -92,10 +108,12 @@ public class AttemptFacade implements AttemptService {
         attempt.setSubmittedAt(new Date());
         attempt.setScore(score);
 
-
         AttemptRS attemptRS = new AttemptRS();
         attemptRS.setUsername(user.getUsername());
         attemptRS.setTitle(quiz.getTitle());
+
+        redisService.getValue(RedisKey.VALUE_ATTEMPT + user.getId() + ":" + quizId, toJsonString(attempt), 30, TimeUnit.MINUTES);
+        redisService.addToZSet(RedisKey.ZSET_LEADERBOARD + quizId, user.getUsername(), score);
         return attemptRepository.save(attempt);
     }
 }

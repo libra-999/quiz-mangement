@@ -1,6 +1,7 @@
 package org.example.tol.domain.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tol.controller.request.QuestionRQ;
 import org.example.tol.controller.request.QuizRQ;
@@ -9,6 +10,8 @@ import org.example.tol.domain.exception.QuizException;
 import org.example.tol.domain.service.QuizService;
 import org.example.tol.infrastructure.entity.Question;
 import org.example.tol.infrastructure.entity.Quiz;
+import org.example.tol.infrastructure.redis.RedisService;
+import org.example.tol.infrastructure.redis.config.RedisKey;
 import org.example.tol.infrastructure.repository.QuestionRepository;
 import org.example.tol.infrastructure.repository.QuizRepository;
 import org.example.tol.share.entity.Filter;
@@ -23,6 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static org.example.tol.share.controller.ControllerHandler.fromJsonString;
+import static org.example.tol.share.controller.ControllerHandler.toJsonString;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +39,7 @@ public class QuizFacade implements QuizService {
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
     private final TemplateFactory templateFactory;
+    private final RedisService redisService;
 
     @Override
     public Paging<Quiz> list(PaginationQuery query, Filter filter) {
@@ -51,9 +59,17 @@ public class QuizFacade implements QuizService {
     }
 
     @Override
+    @SneakyThrows
     @Transactional(readOnly = true)
     public Quiz view(String quizId) {
-        return templateFactory.builder(Quiz.class).isNull(quizId, "deleteTime").findOne().orElseThrow(QuizException::notFound);
+        Quiz quiz = templateFactory.builder(Quiz.class).isNull(quizId, "deleteTime").findOne().orElseThrow(QuizException::notFound);
+
+        if (redisService.getValue(RedisKey.VALUE_QUIZ) != null){
+            return fromJsonString(redisService.getValue(RedisKey.VALUE_QUIZ), Quiz.class);
+        }else {
+            redisService.getValue(RedisKey.VALUE_QUIZ,toJsonString(quiz), 3, TimeUnit.MINUTES);
+            return quiz;
+        }
     }
 
     @Override

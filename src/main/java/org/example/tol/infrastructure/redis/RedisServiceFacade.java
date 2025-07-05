@@ -3,10 +3,7 @@ package org.example.tol.infrastructure.redis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.tol.infrastructure.entity.User;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,9 +47,15 @@ public class RedisServiceFacade implements RedisService {
     }
 
     @Override
-    public String hash(String channel, String message) {
+    public void putHash(String channel, String key, String value) {
         HashOperations<String, String, String> hashOperations = template.opsForHash();
-        return hashOperations.get(channel,message);
+        hashOperations.put(channel, key,value);
+    }
+
+    @Override
+    public String hash(String channel, String key) {
+        HashOperations<String, String, String> hashOperations = template.opsForHash();
+        return hashOperations.get(channel, key);
     }
 
     @Override
@@ -84,6 +87,30 @@ public class RedisServiceFacade implements RedisService {
     @Override
     public Long increment(String key) {
         return template.opsForValue().increment(key);
+    }
+
+    @Override
+    public Set<String> topPlayer(String channel, int topNumber) {
+        ZSetOperations<String, String> operations = template.opsForZSet();
+        return operations.reverseRange(channel, 0, topNumber - 1);
+    }
+
+    @Override
+    public Double score(String channel, String user) {
+        ZSetOperations<String, String> operations = template.opsForZSet();
+        return operations.score(channel, user);
+    }
+
+    @Override
+    public Long rank(String channel, String userId) {
+        ZSetOperations<String, String> operations = template.opsForZSet();
+        return operations.reverseRank(channel, userId);
+    }
+
+    @Override
+    public void addToZSet(String channel, String member, int score) {
+        ZSetOperations<String, String> operations = template.opsForZSet();
+        operations.add(channel, member, score);
     }
 
 }
