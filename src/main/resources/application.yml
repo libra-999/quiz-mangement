@@ -4,11 +4,11 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://admin:libra123@localhost:27017/toldb?authSource=admin
+      uri: mongodb://${MONGO_USERNAME:admin}:${MONGO_PASSWORD:libra123}@${MONGO_HOST:localhost}:27017/${MONGO_DATABASE:toldb}?authSource=${MONGO_USERNAME:admin}
     redis:
-      host: localhost
-      port: 6379
-      password: libra123
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:libra123}
       database: 0
       lettuce:
         pool:
